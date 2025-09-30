@@ -1,19 +1,11 @@
-version: "3.9"
-
+version: '3.8'
 services:
-  n8n:
-    image: n8nio/n8n:latest
-    container_name: n8n
-    restart: unless-stopped
+  web:
+    build: .
     ports:
-      - "5678:5678"
-    environment:
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=tu_password_segura
-      - N8N_HOST=localhost
-      - N8N_PORT=5678
-      - N8N_PROTOCOL=http
-      - NODE_ENV=production
+      - "5002:5000"
     volumes:
-      - ./n8n_data:/home/node/.n8n
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+    command: python app.py --host=0.0.0.0
