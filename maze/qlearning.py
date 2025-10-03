@@ -6,15 +6,15 @@ class QLearningAgent:
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
-        self.q = np.zeros((maze.rows, maze.cols, 4))  # 4 acciones
+        self.q = np.zeros((maze.rows, maze.cols, 4))
         self.path = []
 
     def choose_action(self, pos):
+        # Escoge acción con política epsilon-greedy
+        acts = self.maze.valid_actions(pos)
         if np.random.rand() < self.epsilon:
-            acts = self.maze.valid_actions(pos)
             return np.random.choice(acts)
         qvals = self.q[pos[0], pos[1]]
-        acts = self.maze.valid_actions(pos)
         maxq = np.max(qvals[acts])
         best_acts = [a for a in acts if qvals[a] == maxq]
         return np.random.choice(best_acts)
@@ -25,15 +25,15 @@ class QLearningAgent:
         steps = []
         while not done:
             a = self.choose_action(s)
-            prev_s = s
             s_, r, done = self.maze.step(a)
-            best_q_next = np.max(self.q[s_[0], s_[1], self.maze.valid_actions(s_)])
-            # Update Q value
-            self.q[prev_s[0], prev_s[1], a] += self.alpha * (
-                r + self.gamma * best_q_next - self.q[prev_s[0], prev_s[1], a]
+            # Q-Learning: update con el máximo de Q en s' (a')
+            next_valid = self.maze.valid_actions(s_)
+            max_q_next = np.max(self.q[s_[0], s_[1], next_valid]) if next_valid else 0.0
+            self.q[s[0], s[1], a] += self.alpha * (
+                r + self.gamma * max_q_next - self.q[s[0], s[1], a]
             )
             steps.append({
-                'estado': prev_s,
+                'estado': s,
                 'accion': a,
                 'nuevo_estado': s_,
                 'recompensa': r
@@ -42,7 +42,6 @@ class QLearningAgent:
         return steps
 
     def run_episodes(self, n):
-        # Devuelve una lista de listas de pasos y una lista de recompensas totales
         episodes = []
         rewards = []
         for _ in range(n):
