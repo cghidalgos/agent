@@ -49,26 +49,20 @@ Este proyecto es una aplicación web interactiva que permite comparar dos algori
 git clone https://github.com/tu_usuario/maze-rl.git
 cd maze-rl
 
-text
-
 2. Instala dependencias Python:
 python -m venv venv
 source venv/bin/activate # Linux/Mac
 venv\Scripts\activate # Windows
 pip install -r requirements.txt
 
-text
-
 3. Ejecuta la aplicación localmente:
 python app.py
 
-text
 La aplicación estará disponible en `http://localhost:5000`
 
 4. (Opcional) Usar Docker:
 docker-compose up --build
 
-text
 La app escucha en el puerto 5002 (`http://localhost:5002`)
 
 ---
